@@ -64,7 +64,7 @@ declare class CookieStore {
      * @param {String} [path]     指定path（可选）
      * @return {Cookie}           cookie 对象
      */
-    getCookie(name?: string, domain?: string, path?: string): any;
+    getCookie(name?: string, domain?: string, path?: string): Cookie | undefined;
     /**
      * 获取 cookies key/value 对象
      * @param  {String} [domain]  指定域名（可选）
@@ -76,13 +76,13 @@ declare class CookieStore {
      * @param  {String} [domain]  指定域名（可选）
      * @return {Array}            Cookie 对象数组
      */
-    getCookiesArray(domain?: string, path?: string): any[];
+    getCookiesArray(domain?: string, path?: string): Cookie[];
     /**
      * 设置 cookies 对象数组到 store
      * @param  {Array} cookies  Cookie 对象数组
      * @return {Map}            cookies Map 对象
      */
-    setCookiesArray(cookies?: any[]): any;
+    setCookiesArray(cookies?: any[]): Map<string, Map<string, Cookie>>;
     /**
      * 清除 cookies
      * @param  {String} [domain]  指定域名（可选）
@@ -100,7 +100,7 @@ declare class CookieStore {
      * @param {String} setCookieStr response set-cookie 字符串
      * @param {String} domain       默认域名（如果 set-cookie 中没有设置 domain 则使用该域名）
      */
-    setResponseCookies(setCookieStr: string | undefined, domain: string): any;
+    setResponseCookies(setCookieStr: string | undefined, domain: string): Map<string, Map<string, Cookie>>;
     /**
      * 解析 response set-cookie 字段
      * @param  {String} setCookieStr response set-cookie 字符串
@@ -121,6 +121,6 @@ declare class CookieStore {
     /**
      * 从 Storage 读取 cookies
      */
-    __readFromStorage(): any;
+    __readFromStorage(): Map<string, Map<string, Cookie>> | undefined;
 }
 export default CookieStore;

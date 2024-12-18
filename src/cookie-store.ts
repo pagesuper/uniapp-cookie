@@ -1,7 +1,7 @@
-import Cookie from './cookie';
 import cookieParser from 'set-cookie-parser';
-import util from './util';
+import Cookie from './cookie';
 import localStorage from './local-storage';
+import util from './util';
 
 /**
  * CookieStore 类
@@ -12,7 +12,7 @@ class CookieStore {
     | undefined;
 
   private __storageKey: string;
-  private __cookiesMap: any;
+  private __cookiesMap: Map<string, Map<string, Cookie>>;
 
   /**
    * 构造函数
@@ -93,7 +93,7 @@ class CookieStore {
   dir() {
     const dirObj = {};
 
-    for (const domain of this.__cookiesMap.keys()) {
+    for (const domain of Array.from(this.__cookiesMap.keys())) {
       Reflect.set(dirObj, domain, this.getCookies(domain));
     }
 
@@ -115,7 +115,7 @@ class CookieStore {
       cookies && cookies.delete(name);
     } else {
       // 删除所有域名的 cookie
-      for (const cookies of this.__cookiesMap.values()) {
+      for (const cookies of Array.from(this.__cookiesMap.values())) {
         cookies.delete(name);
       }
     }
@@ -140,7 +140,7 @@ class CookieStore {
     const scopeDomains = util.getCookieScopeDomain(domain);
 
     // 获取任意域名的 cookie
-    for (const [key, cookies] of this.__cookiesMap.entries()) {
+    for (const [key, cookies] of Array.from(this.__cookiesMap.entries())) {
       // 如果有域名，则根据域名过滤
       if (domain && scopeDomains.indexOf(key) < 0) continue;
       // 获取 cookie
@@ -182,11 +182,11 @@ class CookieStore {
     const scopeDomains = util.getCookieScopeDomain(domain);
 
     // 获取任意域名的 cookie
-    for (const [key, cookies] of this.__cookiesMap.entries()) {
+    for (const [key, cookies] of Array.from(this.__cookiesMap.entries())) {
       // 如果有域名，则根据域名过滤
       if (domain && scopeDomains.indexOf(key) < 0) continue;
       // 循环当前域名下所有 cookie
-      for (const cookie of cookies.values()) {
+      for (const cookie of Array.from(cookies.values())) {
         // 筛选符合 path 条件并且未过期的 cookie
         if (cookie.isInPath(path) && !cookie.isExpired()) {
           cookiesArr.push(cookie);
@@ -301,8 +301,8 @@ class CookieStore {
       const saveCookies = [];
 
       // 获取需要持久化的 cookie
-      for (const cookies of this.__cookiesMap.values()) {
-        for (const cookie of cookies.values()) {
+      for (const cookies of Array.from(this.__cookiesMap.values())) {
+        for (const cookie of Array.from(cookies.values())) {
           if (cookie.isExpired()) {
             // 清除无效 cookie
             cookies.delete(cookie.name);
@@ -316,7 +316,7 @@ class CookieStore {
       // 保存到本地存储
       localStorage.setItem(this.__storageKey, saveCookies);
     } catch (err) {
-      console.warn('Cookie 存储异常：', err);
+      console.warn('Cookie write fail：', err);
     }
   }
 
@@ -327,14 +327,12 @@ class CookieStore {
     try {
       // 从本地存储读取 cookie 数据数组
       let cookies = localStorage.getItem(this.__storageKey) || [];
-
       // 转化为 Cookie 对象数组
       cookies = cookies.map((item: any) => new Cookie(item));
-
       // 转化为 cookie map 对象
       return this.setCookiesArray(cookies);
     } catch (err) {
-      console.warn('Cookie 读取异常：', err);
+      console.warn('Cookie read fail：', err);
     }
   }
 }
