@@ -10,5 +10,5 @@ bun add uniapp-cookie
 
 ```ts
 // ts/js add next line
-import 'uniapp-cookie/lib/index';
+import 'uniapp-cookie';
 ```

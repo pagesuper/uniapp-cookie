@@ -1,10 +1,11 @@
 {
   "name": "uniapp-cookie",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "uniapp-cookie",
   "author": "happy",
   "private": false,
   "license": "MIT",
+  "main": "lib/index.js",
   "keywords": [
     "weapp",
     "uniapp",
