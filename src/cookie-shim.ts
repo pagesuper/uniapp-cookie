@@ -26,7 +26,7 @@ const cookieStore = (function () {
    * 定义请求 cookie 代理函数
    * @param  {Object} options 请求参数
    */
-  function cookieRequestProxy(this: any, options: ICookieRequestProxyOptions) {
+  function cookieRequestProxy(options: ICookieRequestProxyOptions) {
     // 是否启用 cookie（默认 true）
     options.cookie = options.cookie === undefined || !!options.cookie;
     // 数据类型
@@ -67,9 +67,9 @@ const cookieStore = (function () {
       };
     }
 
-    console.log('this: ...', this);
-
     // 发送网络请求
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    /* @ts-expect-error */
     return (this as any)(options);
   }
 
