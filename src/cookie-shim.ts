@@ -26,7 +26,7 @@ const cookieStore = (function () {
    * 定义请求 cookie 代理函数
    * @param  {Object} options 请求参数
    */
-  const cookieRequestProxy = (options: ICookieRequestProxyOptions) => {
+  function cookieRequestProxy(this: any, options: ICookieRequestProxyOptions) {
     // 是否启用 cookie（默认 true）
     options.cookie = options.cookie === undefined || !!options.cookie;
     // 数据类型
@@ -66,9 +66,12 @@ const cookieStore = (function () {
         successCallback && successCallback(response);
       };
     }
+
+    console.log('this: ...', this);
+
     // 发送网络请求
-    return (api.request as any)(options);
-  };
+    return (this as any)(options);
+  }
 
   // 绑定新的
   const requestProxy = cookieRequestProxy.bind(api.request);
