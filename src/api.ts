@@ -1,4 +1,3 @@
-declare const uni: any;
 declare const qq: any;
 declare const tt: any;
 declare const swan: any;
@@ -7,22 +6,22 @@ declare const my: any;
 
 function getApi() {
   if (typeof my !== 'undefined') {
-    uni.platform = 'my';
-    return uni;
+    my.platform = 'my';
+    return my;
   } else if (typeof tt !== 'undefined') {
-    uni.platform = 'tt';
-    return uni;
+    tt.platform = 'tt';
+    return tt;
   } else if (typeof swan !== 'undefined') {
-    uni.platform = 'swan';
-    return uni;
+    swan.platform = 'swan';
+    return swan;
   } else if (typeof qq !== 'undefined') {
-    uni.platform = 'qq';
-    return uni;
+    qq.platform = 'qq';
+    return qq;
   } else if (typeof wx !== 'undefined') {
-    uni.platform = typeof window !== 'undefined' && typeof location !== 'undefined' ? 'h5' : 'wx';
-    return uni;
+    wx.platform = typeof window !== 'undefined' && typeof location !== 'undefined' ? 'h5' : 'wx';
+    return wx;
   }
-  return { platform: 'none' };
+  return { platform: typeof window !== 'undefined' && typeof location !== 'undefined' ? 'h5' : 'none' };
 }
 
 export default getApi();

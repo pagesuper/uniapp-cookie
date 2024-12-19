@@ -1,6 +1,6 @@
 {
   "name": "uniapp-cookie",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "uniapp-cookie",
   "author": "happy",
   "private": false,
@@ -39,7 +39,7 @@
     "*.{css,scss}": "stylelint --fix"
   },
   "dependencies": {
-    "almighty-tool": ">=0.0.32",
+    "almighty-tool": ">=0.0.35",
     "set-cookie-parser": "^2.7.1"
   },
   "devDependencies": {
