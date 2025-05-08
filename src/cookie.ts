@@ -30,19 +30,65 @@ class Cookie {
     this.dateTime = (props.dateTime ? this.getDateTime(props.dateTime) : null) ?? new Date();
   }
 
-  getDateTime(dateStr: string): Date | null {
-    // 尝试解析 RFC 2822 格式 (Fri, 08 May 2026 08:55:36 GMT)
-    const rfc2822Match = dateStr.match(/^[A-Za-z]{3}, (\d{2}) ([A-Za-z]{3}) (\d{4}) (\d{2}:\d{2}:\d{2}) GMT$/);
-    if (rfc2822Match) {
-      const [, day, month, year, time] = rfc2822Match;
-      const monthIndex = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(month);
-      const [hours, minutes, seconds] = time.split(':').map(Number);
-      return new Date(Date.UTC(Number(year), monthIndex, Number(day), hours, minutes, seconds));
+  getDateTime(dateStr: string | Date | number | null | undefined): Date | null {
+    // 1. 处理空值和无效输入
+    if (dateStr == null) return null;
+
+    // 2. 如果已经是Date对象直接返回
+    if (dateStr instanceof Date) {
+      return isNaN(dateStr.getTime()) ? null : new Date(dateStr);
     }
 
+    // 3. 如果是数字时间戳
+    if (typeof dateStr === 'number') {
+      const date = new Date(dateStr);
+      return isNaN(date.getTime()) ? null : date;
+    }
+
+    // 4. 确保是字符串类型
+    const str = String(dateStr).trim();
+    if (!str) return null;
+
+    // 5. 尝试解析 RFC 2822 格式 (Fri, 08 May 2026 08:55:36 GMT)
+    const rfc2822Match = str.match(/^[A-Za-z]{3}, (\d{1,2}) ([A-Za-z]{3}) (\d{4}) (\d{2}:\d{2}:\d{2}) GMT$/i);
+    if (rfc2822Match) {
+      const [, day, month, year, time] = rfc2822Match;
+      const monthIndex = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].findIndex(
+        (m) => m.toLowerCase() === month.toLowerCase(),
+      );
+      if (monthIndex === -1) return null;
+
+      const [hours, minutes, seconds] = time.split(':').map(Number);
+      const date = new Date(Date.UTC(Number(year), monthIndex, Number(day), hours, minutes, seconds));
+      return isNaN(date.getTime()) ? null : date;
+    }
+
+    // 6. 尝试解析其他常见格式
+    // 6.1 ISO 8601 格式 (2023-05-15T12:00:00Z)
+    if (/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2})?)?$/i.test(str)) {
+      const date = new Date(str);
+      return isNaN(date.getTime()) ? null : date;
+    }
+
+    // 6.2 简单日期格式 (May 08 2026 08:55:36 GMT)
+    const simpleDateMatch = str.match(/^([A-Za-z]{3}) (\d{1,2}) (\d{4}) (\d{2}:\d{2}:\d{2}) GMT$/i);
+    if (simpleDateMatch) {
+      const [, month, day, year, time] = simpleDateMatch;
+      const monthIndex = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].findIndex(
+        (m) => m.toLowerCase() === month.toLowerCase(),
+      );
+      if (monthIndex === -1) return null;
+
+      const [hours, minutes, seconds] = time.split(':').map(Number);
+      const date = new Date(Date.UTC(Number(year), monthIndex, Number(day), hours, minutes, seconds));
+      return isNaN(date.getTime()) ? null : date;
+    }
+
+    // 7. 最后尝试原生Date解析
     try {
-      return new Date(dateStr);
-    } catch (error) {
+      const date = new Date(str);
+      return isNaN(date.getTime()) ? null : date;
+    } catch {
       return null;
     }
   }
