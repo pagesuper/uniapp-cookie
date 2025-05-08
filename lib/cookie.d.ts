@@ -14,6 +14,7 @@ declare class Cookie {
      * 构造函数
      */
     constructor(props: any);
+    getDateTime(dateStr: string): Date | null;
     /**
      * 设置 cookie, 将 set-cookie 字符串转换为 Cookie 对象
      */

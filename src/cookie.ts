@@ -23,11 +23,28 @@ class Cookie {
     // other
     this.domain = props.domain || '';
     this.path = props.path || '/';
-    this.expires = props.expires ? new Date(props.expires) : null;
+    this.expires = props.expires ? this.getDateTime(props.expires) : null;
     this.maxAge = props.maxAge ? parseInt(props.maxAge) : null;
     this.httpOnly = !!props.httpOnly;
     // 记录时间
-    this.dateTime = props.dateTime ? new Date(props.dateTime) : new Date();
+    this.dateTime = (props.dateTime ? this.getDateTime(props.dateTime) : null) ?? new Date();
+  }
+
+  getDateTime(dateStr: string): Date | null {
+    // 尝试解析 RFC 2822 格式 (Fri, 08 May 2026 08:55:36 GMT)
+    const rfc2822Match = dateStr.match(/^[A-Za-z]{3}, (\d{2}) ([A-Za-z]{3}) (\d{4}) (\d{2}:\d{2}:\d{2}) GMT$/);
+    if (rfc2822Match) {
+      const [, day, month, year, time] = rfc2822Match;
+      const monthIndex = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(month);
+      const [hours, minutes, seconds] = time.split(':').map(Number);
+      return new Date(Date.UTC(Number(year), monthIndex, Number(day), hours, minutes, seconds));
+    }
+
+    try {
+      return new Date(dateStr);
+    } catch (error) {
+      return null;
+    }
   }
 
   /**
