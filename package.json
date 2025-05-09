@@ -39,8 +39,6 @@
     "*.{css,scss}": "stylelint --fix"
   },
   "dependencies": {
-    "almighty-tool": ">=0.0.59",
-    "set-cookie-parser": "^2.7.1"
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "7.20.0",
@@ -62,6 +60,7 @@
     "@types/ws": "8.5.4",
     "@typescript-eslint/eslint-plugin": "6.20.0",
     "@typescript-eslint/parser": "6.20.0",
+    "almighty-tool": ">=0.0.83",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",

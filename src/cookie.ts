@@ -1,4 +1,4 @@
-import cookieParser from 'set-cookie-parser';
+import setCookieParser from './set-cookie-parser';
 import util from './util';
 
 /**
@@ -97,9 +97,9 @@ class Cookie {
    * 设置 cookie, 将 set-cookie 字符串转换为 Cookie 对象
    */
   set(setCookieStr = '') {
-    const cookie = cookieParser.parse(setCookieStr, { decodeValues: false })[0];
-    if (cookie) {
-      Object.assign(this, cookie);
+    const cookies = setCookieParser.parse(setCookieStr, { decodeValues: false });
+    if (Array.isArray(cookies) && cookies.length > 0) {
+      Object.assign(this, cookies[0]);
       // 更新设置时间
       this.dateTime = new Date();
     }
